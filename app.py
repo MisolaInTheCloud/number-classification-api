@@ -1,7 +1,9 @@
 import requests
 from flask import Flask, request, jsonify
+from flask_cors import CORS  # Import CORS
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
 
 def is_prime(n):
     """Check if a number is prime."""
@@ -39,13 +41,11 @@ def get_fun_fact(n):
 def classify_number():
     number = request.args.get('number')
 
-    if not number or not number.isdigit():
+    # Check if the input is valid
+    if not number or not number.isdigit() or int(number) < 0:
         return jsonify({"error": "Invalid input. Please provide a non-negative integer."}), 400
 
     number = int(number)
-
-    if number < 0:
-        return jsonify({"error": "Negative numbers are not allowed."}), 400
 
     properties = []
 
