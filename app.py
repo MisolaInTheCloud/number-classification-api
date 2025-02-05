@@ -27,6 +27,15 @@ def is_armstrong(n):
     digits = [int(d) for d in str(n)]
     return sum(d ** len(digits) for d in digits) == n
 
+def is_fibonacci(n):
+    """Check if a number is a Fibonacci number."""
+    if n < 0:
+        return False
+    a, b = 0, 1
+    while a < n:
+        a, b = b, a + b
+    return a == n
+
 def get_fun_fact(n):
     """Fetch a fun fact from the Numbers API."""
     try:
@@ -57,9 +66,28 @@ def classify_number():
         "number": number,
         "is_prime": is_prime(number),
         "is_perfect": is_perfect(number),
+        "is_fibonacci": is_fibonacci(number),  # Include Fibonacci check
         "properties": properties,
         "digit_sum": sum(int(digit) for digit in str(number)),
         "fun_fact": get_fun_fact(number)
+    }
+
+    return jsonify(response), 200
+
+@app.route('/api/is-fibonacci', methods=['GET'])
+def check_fibonacci():
+    number = request.args.get('number')
+
+    # Check if the input is valid
+    if not number or not number.isdigit() or int(number) < 0:
+        return jsonify({"error": "Invalid input. Please provide a non-negative integer."}), 400
+
+    number = int(number)
+    is_fib = is_fibonacci(number)
+
+    response = {
+        "number": number,
+        "is_fibonacci": is_fib
     }
 
     return jsonify(response), 200
